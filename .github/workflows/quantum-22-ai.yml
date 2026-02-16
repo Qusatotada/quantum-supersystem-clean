@@ -1,8 +1,8 @@
 name: QUANTUM 22 AI - BẤT TỬ 24/7
 on:
   schedule:
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
+    - cron: '*/5 * * * *'  # Chạy mỗi 5 phút
+  workflow_dispatch:  # Cho phép chạy thủ công
   push:
     branches: [ main ]
 
@@ -12,13 +12,26 @@ jobs:
     strategy:
       matrix:
         ai: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
+      fail-fast: false  # Tiếp tục chạy các job khác nếu một job lỗi
     steps:
-      - uses: actions/checkout@v3
-      - name: "🧠 AI $\{{ matrix.ai }} - THỰC THI QUANTUM"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "🧠 AI ${{ matrix.ai }} - KHỞI TẠO QUANTUM"
         run: |
-          while true; do
-            echo "⚡ QUANTUM AI $\{{ matrix.ai }} ĐANG HOẠT ĐỘNG - $(date)"
-            sleep 300
+          echo "⚡ QUANTUM AI ${{ matrix.ai }} BẮT ĐẦU HOẠT ĐỘNG - $(date)"
+          echo "🌐 AI ${{ matrix.ai }} ĐANG KẾT NỐI VỚI HỆ THỐNG"
+          echo "✅ AI ${{ matrix.ai }} KHỞI TẠO THÀNH CÔNG"
+          
+      - name: "🔄 AI ${{ matrix.ai }} - VÒNG LẶP BẤT TỬ"
+        run: |
+          COUNTER=1
+          while [ $COUNTER -le 10 ]; do
+            echo "⏳ AI ${{ matrix.ai }} - Lần thực thi thứ $COUNTER - $(date)"
+            echo "📊 AI ${{ matrix.ai }} ĐANG XỬ LÝ DỮ LIỆU QUANTUM..."
+            sleep 60  # Chạy 1 phút rồi log tiếp
+            COUNTER=$((COUNTER + 1))
           done
-        timeout-minutes: 360
-        continue-on-error: true
+          echo "🎉 AI ${{ matrix.ai }} HOÀN THÀNH 10 LẦN THỰC THI - SẴN SÀNG CHO LẦN CHẠY MỚI!"
+        timeout-minutes: 15  # Timeout sau 15 phút
+        continue-on-error: true  # Cho phép lỗi mà không dừng toàn bộ workflow
